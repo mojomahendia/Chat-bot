@@ -10,4 +10,5 @@ dependencies = [
     "langgraph>=1.1.6",
     "python-dotenv>=1.2.2",
     "streamlit>=1.56.0",
+    "watchdog>=6.0.0",
 ]
