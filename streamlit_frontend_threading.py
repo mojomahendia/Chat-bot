@@ -2,6 +2,17 @@ import streamlit as st
 from langgraph_backend import chatbot
 from langchain_core.messages import HumanMessage
 
+
+# sidebar UI section
+st.sidebar.title('Langgraph Chatbot')
+
+if st.sidebar.button('New Chat'):
+    reset_chat()
+
+st.sidebar.header('My Conversations')
+
+
+
 # st.session_state -> dict -> 
 CONFIG = {'configurable': {'thread_id': 'thread-1'}}
 
