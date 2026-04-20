@@ -1,15 +1,34 @@
 import streamlit as st
 from langgraph_backend import chatbot
 from langchain_core.messages import HumanMessage
+import uuid
 
-# st.session_state -> dict -> 
-CONFIG = {'configurable': {'thread_id': 'thread-1'}}
+#********************************************* Utility function ******************************************
+
+def generate_thread_id():
+    thread_id = uuid.uuid4()
+    return thread_id
+
+# reset chat
+def reest_chat():
+    thread_id = generate_thread_id()
+    st.session_state['thread_id'] = thread_id
+    # add new thread to the thread list
+    add_thread(st.session_state['thread_id'])
+    # clear message history for clear ui
+    st.session_state['message_history'] = []
+
+
 
 #********************************************* Session Setup *********************************************
 
-
+# checking if there is no message history in current session, if not then it genearates one
 if 'message_history' not in st.session_state:
     st.session_state['message_history'] = []
+
+# adding generating thread
+if 'thread_id' not in st.session_state:
+    st.session_state['thread_id']=generate_thread_id()
 
 #********************************************* Sidebar UI ***********************************************
 
@@ -24,6 +43,8 @@ for message in st.session_state['message_history']:
     with st.chat_message(message['role']):
         st.text(message['content'])
 
+# st.session_state -> dict -> 
+CONFIG = {'configurable': {'thread_id': st.session_state['thread_id']}}
 #{'role': 'user', 'content': 'Hi'}
 #{'role': 'assistant', 'content': 'Hi=ello'}
 
@@ -42,7 +63,7 @@ if user_input:
         ai_message = st.write_stream(
             message_chunk.content for message_chunk, metadata in chatbot.stream(
                 {'messages': [HumanMessage(content=user_input)]},
-                config= {'configurable': {'thread_id': 'thread-1'}},
+                config= CONFIG,
                 stream_mode= 'messages'
             )
         )
