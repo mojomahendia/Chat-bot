@@ -35,6 +35,7 @@ if 'thread_id' not in st.session_state:
 st.sidebar.title('Langgraph Chatbot')
 st.sidebar.button('New Chat')
 st.sidebar.header('My Conversation')
+st.sidebar.text(st.session_state['thread_id'])
 
 #********************************************* Main UI **************************************************
 
