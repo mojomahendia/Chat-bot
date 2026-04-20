@@ -9,6 +9,10 @@ def generate_thread_id():
     thread_id = uuid.uuid4()
     return thread_id
 
+def add_thread(thread_id):
+    if thread_id not in st.session_state['chat_threads']:
+        st.session_state['chat_threads'].append(thread_id)
+
 # reset chat
 def reest_chat():
     thread_id = generate_thread_id()
@@ -30,6 +34,10 @@ if 'message_history' not in st.session_state:
 if 'thread_id' not in st.session_state:
     st.session_state['thread_id']=generate_thread_id()
 
+if 'chat_threads' not in st.session_state:
+    st.session_state['chat_threads'] = []
+add_thread(st.session_state['thread_id'])
+
 #********************************************* Sidebar UI ***********************************************
 
 st.sidebar.title('Langgraph Chatbot')
@@ -37,6 +45,11 @@ if st.sidebar.button('New Chat'):
     reest_chat()
 st.sidebar.header('My Conversation')
 st.sidebar.text(st.session_state['thread_id'])
+
+for thread_id in st.session_state['chat_threads'][::-1]:
+    if st.sidebar.button(str(thread_id)):
+        pass
+
 
 #********************************************* Main UI **************************************************
 
