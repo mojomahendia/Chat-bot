@@ -22,6 +22,11 @@ def reest_chat():
     # clear message history for clear ui
     st.session_state['message_history'] = []
 
+def load_conversation(thread_id):
+    state = chatbot.get_state(config={'configurable': {'thread_id': thread_id}})
+    # Check if messages key exists in state values, return empty list if not
+    return state.values.get('messages', [])
+
 
 
 #********************************************* Session Setup *********************************************
@@ -44,11 +49,24 @@ st.sidebar.title('Langgraph Chatbot')
 if st.sidebar.button('New Chat'):
     reest_chat()
 st.sidebar.header('My Conversation')
-st.sidebar.text(st.session_state['thread_id'])
+# st.sidebar.text(st.session_state['thread_id'])
 
 for thread_id in st.session_state['chat_threads'][::-1]:
     if st.sidebar.button(str(thread_id)):
-        pass
+        st.session_state['thread_id'] = thread_id
+        messages = load_conversation(thread_id)
+
+        temp_messages = []
+
+        for msg in messages:
+            if isinstance(msg, HumanMessage):
+                role='user'
+            else:
+                role='assistant'
+            temp_messages.append({'role': role, 'content': msg.content})
+
+        st.session_state['message_history'] = temp_messages
+
 
 
 #********************************************* Main UI **************************************************
